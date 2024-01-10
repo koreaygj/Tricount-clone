@@ -9,7 +9,7 @@ public class Member {
   private long id;
 
   @NotEmpty
-  private String loginId;
+  private String userId;
   @NotEmpty
   private String password;
   @NotEmpty
