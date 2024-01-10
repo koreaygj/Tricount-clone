@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### mysql connection const
+src/main/java/groom/tricountClone/connection/ConnectionConst.java
+application-mysql.properties
