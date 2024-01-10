@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Member {
 
-  private long id;
+  private long memberId;
 
   @NotEmpty
   private String userId;

@@ -22,7 +22,7 @@ public class MemberRepository {
 
   // 사용자 추가
   public Member saveMember(Member member) {
-    String sql = "insert into members(userId, password, username) values( ?, ?, ?)";
+    String sql = "insert into members(userID, password, username) values( ?, ?, ?)";
     Connection con = null;
     PreparedStatement preparedStatement = null;
     try {
@@ -56,17 +56,17 @@ public class MemberRepository {
   public List<Member> findAll() {
     String sql = "select * from members";
     Connection con = null;
-    PreparedStatement preparedStatement = null;
+    PreparedStatement ps = null;
     ResultSet rs = null;
     List<Member> members = new ArrayList<>();
     try {
       con = mainRepository.getConnection();
-      preparedStatement = con.prepareStatement(sql);
-      rs = preparedStatement.executeQuery();
+      ps = con.prepareStatement(sql);
+      rs = ps.executeQuery();
       while (rs.next()) {
         Member member = new Member();
-        member.setId(rs.getLong("id"));
-        member.setUserId(rs.getString("userId"));
+        member.setMemberId(rs.getLong("memberID"));
+        member.setUserId(rs.getString("userID"));
         member.setPassword(rs.getString("password"));
         member.setUsername(rs.getString("username"));
         members.add(member);
@@ -76,7 +76,7 @@ public class MemberRepository {
       logForSQLException(e);
       return null;
     } finally {
-      mainRepository.close(con, preparedStatement, rs);
+      mainRepository.close(con, ps, rs);
     }
   }
 

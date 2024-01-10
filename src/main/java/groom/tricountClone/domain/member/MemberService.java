@@ -9,7 +9,7 @@ public class MemberService {
   private final static MemberRepository memberRepository = MemberRepository.getMemberRepository();
 
   public boolean registerNewMember(Member member) throws SQLException {
-    return memberRepository.saveMember(member) == null ? false : true;
+    return memberRepository.saveMember(member) != null;
   }
 
 }
