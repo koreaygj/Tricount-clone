@@ -14,7 +14,9 @@ public class SettlementService {
   }
 
   public Settlement saveSettlement(Settlement settlement, Member loginMember) {
-    return settlementRepository.saveSettlement(settlement, loginMember);
-
+    settlementRepository.saveSettlement(settlement, loginMember);
+    settlementRepository.addMemberToSettlement(settlement.getSettlementId(),
+        loginMember.getMemberId());
+    return settlement;
   }
 }
