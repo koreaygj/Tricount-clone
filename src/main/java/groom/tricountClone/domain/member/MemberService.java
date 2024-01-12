@@ -12,4 +12,7 @@ public class MemberService {
     return memberRepository.saveMember(member) != null;
   }
 
+  public Member findMemberByUsername(String username) {
+    return memberRepository.searchByUsername(username);
+  }
 }

@@ -86,4 +86,30 @@ public class MemberRepository {
     log.error("SQLState: " + e.getSQLState());
     log.error("ErrorCode: " + e.getErrorCode());
   }
+
+  public Member searchByUsername(String username) {
+    String sql = "select * from members where username = ?";
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    Member member = new Member();
+    try {
+      con = mainRepository.getConnection();
+      ps = con.prepareStatement(sql);
+      ps.setString(1, username);
+      rs = ps.executeQuery();
+      if (rs.next()) {
+        member.setMemberId(rs.getLong("memberID"));
+        member.setUserId(rs.getString("userID"));
+        member.setPassword(rs.getString("password"));
+        member.setUsername(rs.getString("username"));
+      }
+      return member;
+    } catch (SQLException e) {
+      logForSQLException(e);
+      return null;
+    } finally {
+      mainRepository.close(con, ps, rs);
+    }
+  }
 }

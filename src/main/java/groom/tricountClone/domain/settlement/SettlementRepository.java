@@ -114,11 +114,31 @@ public class SettlementRepository {
         settlement.setHostUsername(rs.getString("hostUsername"));
         settlement.setName(rs.getString("name"));
         settlement.setDescription(rs.getString("description"));
-        log.info("id={}", settlement.getSettlementId());
-        log.info("hostusername={}", settlement.getHostUsername());
-        log.info("name={}", settlement.getName());
-        log.info("description={}", settlement.getDescription());
         userSettlements.add(settlement);
+      }
+      return userSettlements;
+    } catch (SQLException e) {
+      logForSQLException(e);
+      return null;
+    } finally {
+      mainRepository.close(con, ps, rs);
+    }
+  }
+
+  public List<Long> findSettlementListByMemberId(long loginMemberId) {
+    String sql = "select * from settlementMembers  where memberID = ?";
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    List<Long> userSettlements = new ArrayList<>();
+    try {
+      con = mainRepository.getConnection();
+      ps = con.prepareStatement(sql);
+      ps.setLong(1, loginMemberId);
+      rs = ps.executeQuery();
+      while (rs.next()) {
+        Long settlementId = rs.getLong("settlementID");
+        userSettlements.add(settlementId);
       }
       return userSettlements;
     } catch (SQLException e) {
@@ -134,5 +154,76 @@ public class SettlementRepository {
     log.error("SQLException Message: " + e.getMessage());
     log.error("SQLState: " + e.getSQLState());
     log.error("ErrorCode: " + e.getErrorCode());
+  }
+
+  public Settlement searchSettlementBySettlementID(long settlementId) {
+    String sql = "select * from settlements where settlementID = ?";
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    Settlement settlement = new Settlement();
+    try {
+      con = mainRepository.getConnection();
+      ps = con.prepareStatement(sql);
+      ps.setLong(1, settlementId);
+      rs = ps.executeQuery();
+      if (rs.next()) {
+        settlement.setSettlementId(rs.getLong("settlementID"));
+        settlement.setHostUsername(rs.getString("hostUsername"));
+        settlement.setName(rs.getString("name"));
+        settlement.setDescription(rs.getString("description"));
+      }
+      return settlement;
+    } catch (SQLException e) {
+      logForSQLException(e);
+      return null;
+    } finally {
+      mainRepository.close(con, ps, rs);
+    }
+  }
+
+  public boolean joinMember(long memberId, long settlementId) {
+    String sql = "insert into settlments (memberID, settlementID) values (?, ?)";
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    Settlement settlement = new Settlement();
+    try {
+      con = mainRepository.getConnection();
+      ps = con.prepareStatement(sql);
+      ps.setLong(1, memberId);
+      ps.setLong(2, settlementId);
+      return true;
+    } catch (SQLException e) {
+      logForSQLException(e);
+      return false;
+    } finally {
+      mainRepository.close(con, ps, rs);
+    }
+  }
+
+  public List<String> getJoinMembersBySettlementId(long settlementId) {
+    String sql = "select m.username from members m join settlementMembers sm on m.memberID = sm.memberID where sm.settlementID = ?";
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    List<String> joinMembers = new ArrayList<>();
+    try {
+      con = mainRepository.getConnection();
+      ps = con.prepareStatement(sql);
+      ps.setLong(1, settlementId);
+      rs = ps.executeQuery();
+      while (rs.next()) {
+        String member = rs.getString("username");
+        joinMembers.add(member);
+      }
+      return joinMembers;
+    } catch (SQLException e) {
+      logForSQLException(e);
+      return null;
+    } finally {
+      mainRepository.close(con, ps, rs);
+    }
+
   }
 }

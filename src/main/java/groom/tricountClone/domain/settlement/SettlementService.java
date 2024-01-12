@@ -19,4 +19,21 @@ public class SettlementService {
         loginMember.getMemberId());
     return settlement;
   }
+
+  public Settlement getSettlementById(long settlementId) {
+    return settlementRepository.searchSettlementBySettlementID(settlementId);
+  }
+
+  public boolean joinMemberToSettlement(Member joinMember, long settlementId) {
+    return settlementRepository.joinMember(joinMember.getMemberId(), settlementId);
+  }
+
+  public boolean checkMemberAccessSettlement(Member loginMember, long settlementId) {
+    return settlementRepository.findSettlementListByMemberId(loginMember.getMemberId())
+        .stream().filter(id -> id.equals(settlementId)).count() != 0;
+  }
+
+  public List<String> getJoinMembers(long settlementId) {
+    return settlementRepository.getJoinMembersBySettlementId(settlementId);
+  }
 }
