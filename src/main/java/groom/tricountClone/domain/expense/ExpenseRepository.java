@@ -30,10 +30,7 @@ public class ExpenseRepository {
       con = mainrepository.getConnection();
       ps = con.prepareStatement(sql);
       ps.setLong(1, settlementId);
-      ps.executeQuery();
-      if (rs == null) {
-        return expenseList;
-      }
+      rs = ps.executeQuery();
       while (rs.next()) {
         Expense expense = new Expense();
         expense.setExpenseId(rs.getLong("expenseID"));
