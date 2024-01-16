@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -228,5 +230,33 @@ public class SettlementRepository {
       mainRepository.close(con, ps, rs);
     }
 
+  }
+
+
+  //find all join member Ids for the settlement
+  public List<Balance> findJoinMembersBySettlementId(long settlementId) {
+    log.info("settlementId={}", settlementId);
+    String sql = "select m.memberID, m.username from members m join settlementMembers sm on m.memberID = sm.memberID  where sm.settlementID =?";
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    List<Balance> joinMembers = new ArrayList<>();
+    try {
+      con = mainRepository.getConnection();
+      ps = con.prepareStatement(sql);
+      ps.setLong(1, settlementId);
+      rs = ps.executeQuery();
+      while (rs.next()) {
+        Long memberId = rs.getLong("memberID");
+        String username = rs.getString("username");
+        joinMembers.add(new Balance(memberId, username));
+      }
+      return joinMembers;
+    } catch (SQLException e) {
+      logForSQLException(e);
+      return null;
+    } finally {
+      mainRepository.close(con, ps, rs);
+    }
   }
 }

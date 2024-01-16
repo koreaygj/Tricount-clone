@@ -101,4 +101,21 @@ public class SettlementController {
     response.setResults(settlementService.getJoinMembers(joinSettlementForm.getSettlementId()));
     return response;
   }
+
+  // get settle balance information response by joining member
+  @ResponseBody
+  @GetMapping("/balance")
+  public SettlementResponse getSettlementBalance(HttpSession session,
+      @RequestParam("settlementId") long settlementId) {
+    Member loginMember = (Member) session.getAttribute(LOGIN_MEMBER.getName());
+    SettlementResponse response = new SettlementResponse();
+    //TODO login 여부확인 filter화
+    if (loginMember == null) {
+      response.setStatus(new Status(401, "로그인이 필요합니다."));
+      return response;
+    }
+    response.setStatus(new Status(200, "ok"));
+    response.setResults(settlementService.getSettlementBalance(loginMember, settlementId));
+    return response;
+  }
 }
