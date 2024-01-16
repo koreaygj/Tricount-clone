@@ -183,16 +183,19 @@ public class SettlementRepository {
   }
 
   public boolean joinMember(long memberId, long settlementId) {
-    String sql = "insert into settlments (memberID, settlementID) values (?, ?)";
+    String sql = "insert into settlementMembers (memberID, settlementID) values (?, ?)";
     Connection con = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
     Settlement settlement = new Settlement();
+    log.info("member={}", memberId);
+    log.info("settlement={}", settlementId);
     try {
       con = mainRepository.getConnection();
       ps = con.prepareStatement(sql);
       ps.setLong(1, memberId);
       ps.setLong(2, settlementId);
+      ps.executeUpdate();
       return true;
     } catch (SQLException e) {
       logForSQLException(e);
